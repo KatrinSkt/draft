@@ -1,13 +1,19 @@
 package ru.skypro.homework.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Comments {
+    @Schema(type = "integer", format = "int32", description = "общее количество комментариев")
     private Integer count;
-    private Ad[] results;
 
-    public Comments(Integer count, Ad[] results) {
+    @Schema(description = "Список комментариев")
+    private List<Comment> results;
+
+    public Comments(Integer count, List<Comment> results) {
         this.count = count;
         this.results = results;
     }
@@ -22,11 +28,11 @@ public class Comments {
         this.count = count;
     }
 
-    public Ad[] getResults() {
+    public List<Comment> getResults() {
         return results;
     }
 
-    public void setResults(Ad[] results) {
+    public void setResults(List<Comment> results) {
         this.results = results;
     }
 
@@ -35,21 +41,19 @@ public class Comments {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comments comments = (Comments) o;
-        return Objects.equals(count, comments.count) && Arrays.equals(results, comments.results);
+        return Objects.equals(count, comments.count) && Objects.equals(results, comments.results);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(count);
-        result = 31 * result + Arrays.hashCode(results);
-        return result;
+        return Objects.hash(count, results);
     }
 
     @Override
     public String toString() {
         return "Comments{" +
                 "count=" + count +
-                ", results=" + Arrays.toString(results) +
+                ", results=" + results +
                 '}';
     }
 }
