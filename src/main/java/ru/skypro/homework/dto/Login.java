@@ -1,5 +1,6 @@
 package ru.skypro.homework.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Objects;
@@ -7,8 +8,11 @@ import java.util.Objects;
 @Data
 public class Login {
 
-    private String username;
+    @Schema(type = "string", description = "пароль", minLength = 8, maxLength = 16)
     private String password;
+
+    @Schema(type = "string", description = "логин", minLength = 4, maxLength = 32)
+    private String username;
 
     public Login(String username, String password) {
         this.username = username;

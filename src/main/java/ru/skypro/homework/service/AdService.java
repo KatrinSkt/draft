@@ -51,13 +51,13 @@ public class AdService {
     }
 
     public void updateAd(Integer id, CreateOrUpdateAd adDto) {
-        Ad existingAd = repository.getAdById(id);
-        existingAd.setTitle(adDto.getTitle());
-        existingAd.setPrice(adDto.getPrice());
+//        Ad existingAd = repository.getAdById(id);
+//        existingAd.setTitle(adDto.getTitle());
+//        existingAd.setPrice(adDto.getPrice());
     }
 
     public void removeAd(Integer id) {
-        Ad adToRemove = repository.getAdById(id);
-        adList.remove(adToRemove);
+//        Ad adToRemove = repository.getAdById(id);
+//        adList.remove(adToRemove);
     }
 }

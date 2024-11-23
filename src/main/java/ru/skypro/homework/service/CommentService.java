@@ -17,25 +17,25 @@ public class CommentService {
 
     public Comments getCommentsForAd(Integer adId) {
         Comments comments = new Comments();
-        // Фильтрация комментариев по ID объявления
-        List<Comment> adComments = new ArrayList<>();
-        for (Comment comment : commentList) {
-            if (comment.getAdId().equals(adId)) {
-                adComments.add(comment);
-            }
-        }
-        comments.setComments(adComments);
+//        // Фильтрация комментариев по ID объявления
+//        List<Comment> adComments = new ArrayList<>();
+//        for (Comment comment : commentList) {
+//            if (comment.getAdId().equals(adId)) {
+//                adComments.add(comment);
+//            }
+//        }
+//        comments.setComments(adComments);
         return comments;
     }
 
     public Comment addComment(Integer adId, CreateOrUpdateComment commentDto) {
         Comment newComment = new Comment();
-        newComment.setPk(currentId++);
-        newComment.setAdId(adId);
-        newComment.setText(commentDto.getText());
-
-        // Сохранение нового комментария в списке
-        commentList.add(newComment);
+//        newComment.setPk(currentId++);
+//        newComment.setAdId(adId);
+//        newComment.setText(commentDto.getText());
+//
+//        // Сохранение нового комментария в списке
+//        commentList.add(newComment);
         return newComment;
     }
 
