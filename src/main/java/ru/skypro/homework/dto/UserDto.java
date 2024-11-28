@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
-public class User {
+public class UserDto {
     @Schema(type = "integer", format = "int32", description = "id пользователя")
     private Integer id;
 
@@ -26,13 +26,13 @@ public class User {
     @Schema(type = "string", description = "ссылка на аватар пользователя")
     private String image;
 
-    public User(Integer id,
-                String email,
-                String firstName,
-                String lastName,
-                String phone,
-                Role role,
-                String image) {
+    public UserDto(Integer id,
+                   String email,
+                   String firstName,
+                   String lastName,
+                   String phone,
+                   Role role,
+                   String image) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
@@ -42,7 +42,7 @@ public class User {
         this.image = image;
     }
 
-    public User() {
+    public UserDto() {
     }
 
     public Integer getId() {
@@ -105,8 +105,8 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && role == user.role && Objects.equals(image, user.image);
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(id, userDto.id) && Objects.equals(email, userDto.email) && Objects.equals(firstName, userDto.firstName) && Objects.equals(lastName, userDto.lastName) && Objects.equals(phone, userDto.phone) && role == userDto.role && Objects.equals(image, userDto.image);
     }
 
     @Override

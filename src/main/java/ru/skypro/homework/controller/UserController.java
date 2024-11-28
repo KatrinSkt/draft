@@ -4,12 +4,10 @@ package ru.skypro.homework.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
-import ru.skypro.homework.dto.UpdateUser;
-import ru.skypro.homework.dto.User;
-import ru.skypro.homework.dto.Login;
+import ru.skypro.homework.dto.NewPasswordDto;
+import ru.skypro.homework.dto.UpdateUserDto;
+import ru.skypro.homework.dto.UserDto;
 //import ru.skypro.homework.service.UserService;
 
 @RestController
@@ -22,7 +20,7 @@ public class UserController {
 
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля")
-    public String setPassword(@RequestBody NewPassword newPassword) {
+    public String setPassword(@RequestBody NewPasswordDto newPasswordDto) {
         // Логика обновления пароля
 //        boolean isUpdated = userService.updatePassword(newPassword.getCurrentPassword(), newPassword.getNewPassword());
 //        if (isUpdated) {
@@ -35,7 +33,7 @@ public class UserController {
 
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе")
-    public User getUser() {
+    public UserDto getUser() {
         // Логика получения информации о текущем пользователе
 //        return userService.getCurrentUser();
         return null;
@@ -43,7 +41,7 @@ public class UserController {
 
     @PatchMapping("/me")
     @Operation(summary = "Обновление информации об авторизованном пользователе")
-    public String updateUser(@RequestBody UpdateUser updateUser) {
+    public String updateUser(@RequestBody UpdateUserDto updateUserDto) {
         // Логика обновления информации о пользователе
 //        userService.updateUser(updateUser);
 //        return "Информация о пользователе обновлена";
