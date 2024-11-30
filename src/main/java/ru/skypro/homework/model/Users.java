@@ -1,48 +1,49 @@
-package ru.skypro.homework.dto;
+package ru.skypro.homework.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 
+
+import ru.skypro.homework.dto.Role;
+
+import javax.persistence.*;
 import java.util.Objects;
 
-public class User {
-    @Schema(type = "integer", format = "int32", description = "id пользователя")
+@Entity
+@Table(name="users")
+public class Users {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Schema(type = "string", description = "логин пользователя")
     private String email;
 
-    @Schema(type = "string", description = "имя пользователя")
     private String firstName;
 
-    @Schema(type = "string", description = "фамилия пользователя")
     private String lastName;
 
-    @Schema(type = "string", description = "телефон пользователя")
     private String phone;
 
-    @Schema(type = "string", description = "роль пользователя", allowableValues = {"USER", "ADMIN"})
     private Role role;
+    private String password;
 
-    @Schema(type = "string", description = "ссылка на аватар пользователя")
-    private String image;
-
-    public User(Integer id,
-                String email,
-                String firstName,
-                String lastName,
-                String phone,
-                Role role,
-                String image) {
+    public Users(Integer id, String email, String firstName, String lastName, String phone, Role role, String password) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.role = role;
-        this.image = image;
+        this.password = password;
     }
 
-    public User() {
+    public Users() {
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Integer getId() {
@@ -93,37 +94,29 @@ public class User {
         this.role = role;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && role == user.role && Objects.equals(image, user.image);
+        Users users = (Users) o;
+        return Objects.equals(id, users.id) && Objects.equals(email, users.email) && Objects.equals(firstName, users.firstName) && Objects.equals(lastName, users.lastName) && Objects.equals(phone, users.phone) && role == users.role && Objects.equals(password, users.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, firstName, lastName, phone, role, image);
+        return Objects.hash(id, email, firstName, lastName, phone, role, password);
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Users{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", role=" + role +
-                ", image='" + image + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

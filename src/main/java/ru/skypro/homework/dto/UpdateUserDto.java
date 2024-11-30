@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
-public class UpdateUser {
+public class UpdateUserDto {
     @Schema(type = "string", description = "имя пользователя", minLength = 3, maxLength = 10)
     private String firstName;
 
@@ -14,13 +14,13 @@ public class UpdateUser {
     @Schema(type = "string", description = "телефон пользователя", pattern = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
     private String phone;
 
-    public UpdateUser(String firstName, String lastName, String phone) {
+    public UpdateUserDto(String firstName, String lastName, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
     }
 
-    public UpdateUser() {
+    public UpdateUserDto() {
     }
 
     public String getFirstName() {
@@ -51,7 +51,7 @@ public class UpdateUser {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UpdateUser that = (UpdateUser) o;
+        UpdateUserDto that = (UpdateUserDto) o;
         return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone);
     }
 
