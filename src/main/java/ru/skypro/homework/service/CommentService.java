@@ -1,9 +1,9 @@
 package ru.skypro.homework.service;
 
 import org.springframework.stereotype.Service;
-import ru.skypro.homework.dto.Comment;
-import ru.skypro.homework.dto.Comments;
-import ru.skypro.homework.dto.CreateOrUpdateComment;
+import ru.skypro.homework.dto.CommentDto;
+import ru.skypro.homework.dto.CommentsDto;
+import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,11 @@ import java.util.Optional;
 @Service
 public class CommentService {
 
-    private List<Comment> commentList = new ArrayList<>(); // Хранение комментариев в памяти (можно заменить на БД)
+    private List<CommentDto> commentDtoList = new ArrayList<>(); // Хранение комментариев в памяти (можно заменить на БД)
     private int currentId = 1; // Счетчик ID для новых комментариев
 
-    public Comments getCommentsForAd(Integer adId) {
-        Comments comments = new Comments();
+    public CommentsDto getCommentsForAd(Integer adId) {
+        CommentsDto commentsDto = new CommentsDto();
 //        // Фильтрация комментариев по ID объявления
 //        List<Comment> adComments = new ArrayList<>();
 //        for (Comment comment : commentList) {
@@ -25,38 +25,38 @@ public class CommentService {
 //            }
 //        }
 //        comments.setComments(adComments);
-        return comments;
+        return commentsDto;
     }
 
-    public Comment addComment(Integer adId, CreateOrUpdateComment commentDto) {
-        Comment newComment = new Comment();
+    public CommentDto addComment(Integer adId, CreateOrUpdateCommentDto commentDto) {
+        CommentDto newCommentDto = new CommentDto();
 //        newComment.setPk(currentId++);
 //        newComment.setAdId(adId);
 //        newComment.setText(commentDto.getText());
 //
 //        // Сохранение нового комментария в списке
 //        commentList.add(newComment);
-        return newComment;
+        return newCommentDto;
     }
 
-    public void updateComment(Integer adId, Integer commentId, CreateOrUpdateComment commentDto) {
-        Comment existingComment = getCommentById(commentId);
-        if (!existingComment.getPk().equals(adId)) {
+    public void updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto commentDto) {
+        CommentDto existingCommentDto = getCommentById(commentId);
+        if (!existingCommentDto.getPk().equals(adId)) {
             throw new RuntimeException("Комментарий не принадлежит данному объявлению");
         }
-        existingComment.setText(commentDto.getText());
+        existingCommentDto.setText(commentDto.getText());
     }
 
     public void deleteComment(Integer adId, Integer commentId) {
-        Comment commentToDelete = getCommentById(commentId);
-        if (!commentToDelete.getPk().equals(adId)) {
+        CommentDto commentDtoToDelete = getCommentById(commentId);
+        if (!commentDtoToDelete.getPk().equals(adId)) {
             throw new RuntimeException("Комментарий не принадлежит данному объявлению");
         }
-        commentList.remove(commentToDelete);
+        commentDtoList.remove(commentDtoToDelete);
     }
 
-    private Comment getCommentById(Integer id) {
-        Optional<Comment> commentOptional = commentList.stream().filter(comment -> comment.getPk().equals(id)).findFirst();
+    private CommentDto getCommentById(Integer id) {
+        Optional<CommentDto> commentOptional = commentDtoList.stream().filter(commentDto -> commentDto.getPk().equals(id)).findFirst();
         if (commentOptional.isPresent()) {
             return commentOptional.get();
         }

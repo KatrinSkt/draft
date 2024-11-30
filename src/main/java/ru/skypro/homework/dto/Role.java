@@ -1,7 +1,16 @@
 package ru.skypro.homework.dto;
 
 public enum Role {
-    USER, ADMIN
+    ADMIN(2), USER(1);
+    private final int id;
+
+    Role(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
 
 
