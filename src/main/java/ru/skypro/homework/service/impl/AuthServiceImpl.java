@@ -4,21 +4,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.RegisterDto;
-import ru.skypro.homework.mapper.Mapper;
+import ru.skypro.homework.mapper.Mappers;
 import ru.skypro.homework.model.Users;
 import ru.skypro.homework.repository.UsersRepository;
 import ru.skypro.homework.service.AuthService;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-    private final Mapper mapper;
+    private final Mappers mappers;
     private final UsersRepository usersRepository;
     private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
 
-    public AuthServiceImpl(Mapper mapper, UsersRepository usersRepository, UserDetailsManager manager,
+    public AuthServiceImpl(Mappers mappers, UsersRepository usersRepository, UserDetailsManager manager,
                            PasswordEncoder passwordEncoder) {
-        this.mapper = mapper;
+        this.mappers = mappers;
         this.usersRepository = usersRepository;
         this.manager = manager;
         this.encoder = passwordEncoder;
@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
             return false;
         }else {
 
-            Users users = mapper.toUsers(registerDto);
+            Users users = mappers.toUsers(registerDto);
             /*Users users = new Users();
             users.setEmail(registerDto.getUsername());
             users.setFirstName(registerDto.getFirstName());
