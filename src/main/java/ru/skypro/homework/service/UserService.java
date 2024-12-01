@@ -1,9 +1,15 @@
 
 package ru.skypro.homework.service;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.model.Users;
+import ru.skypro.homework.repository.UsersRepository;
 
 
 import java.util.HashMap;
@@ -12,6 +18,11 @@ import java.util.HashMap;
 @Service
 public class UserService {
 
+    private final UsersRepository usersRepository;
+
+    public UserService(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
     /*private Map<String, User> userDatabase = new HashMap<>(); // Хранение пользователей в памяти
     private String currentUserId = "user1"; // Пример текущего пользователя*/
 
@@ -26,8 +37,19 @@ public class UserService {
     }*/
 
     public UserDto getUser() {
-        // Получение текущего пользователя по ID (в реальном приложении это может быть получено из контекста безопасности)
-        return userDatabase.get(currentUserId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println("getUser "+currentPrincipalName);
+        Users usersFromDb = usersRepository.findByEmail(currentPrincipalName);
+        UserDto userDto = new UserDto();
+        userDto.setId(usersFromDb.getId());
+        userDto.setEmail(usersFromDb.getEmail());
+        userDto.setFirstName(usersFromDb.getFirstName());
+        userDto.setLastName(usersFromDb.getLastName());
+        userDto.setPhone(usersFromDb.getPhone());
+        userDto.setRole(usersFromDb.getRole());
+        userDto.setImage(null); //!!!!!!!!!!!!!!!!!1ДОПИСАТЬ КАРТИНКУ!!!!!!!!!!!!!!
+        return userDto;
     }
 
     /*public void updateUser(UpdateUser updateUserDto) {
