@@ -18,9 +18,13 @@ import ru.skypro.homework.service.impl.AuthServiceImpl;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     @Tag(name = "Авторизация")
@@ -36,15 +40,36 @@ public class AuthController {
     @PostMapping("/register")
     @Tag(name = "Регистрация")
     @Operation(summary = "Регистрация пользователя")
+    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
+        if (authService.register(registerDto)) {
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    } else {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+    /*@PostMapping("/register")
+    @Tag(name = "Регистрация")
+    @Operation(summary = "Регистрация пользователя")
     public int createUser(@RequestBody RegisterDto registerDto) {
 
 
 
-        /*if (authService.register(registerDto)) {
+        *//*if (authService.register(registerDto)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }*/
+        }*//*
         return authService.createUser(registerDto);
-    }
+    }*/
 }

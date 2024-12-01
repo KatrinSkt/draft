@@ -7,6 +7,6 @@ public interface AuthService {
 
     boolean register(RegisterDto registerDto);
 
-    public int createUser(RegisterDto registerDto);
+   // public int createUser(RegisterDto registerDto);
 
 }
