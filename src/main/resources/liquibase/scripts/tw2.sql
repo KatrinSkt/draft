@@ -20,7 +20,7 @@ CREATE TABLE ads (
 CREATE TABLE comments (
     pk INT NOT NULL PRIMARY KEY,
     text TEXT NOT NULL,
-    createdAt INT NOT NULL,
+    createdAt BIGINT NOT NULL,
     users_id INT REFERENCES users (id),
     ads_id INT REFERENCES ads (pk)
 );

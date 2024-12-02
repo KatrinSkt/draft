@@ -1,4 +1,5 @@
 package ru.skypro.homework.controller;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +14,11 @@ import ru.skypro.homework.service.CommentService;
 @Tag(name = "Комментарии")
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService; // Сервис для работы с комментариями
+    private final CommentService commentService; // Сервис для работы с комментариями
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @GetMapping("/{id}/comments")
     @Operation(summary = "Получение комментариев объявления")
@@ -32,18 +36,17 @@ public class CommentController {
 
     @PatchMapping("/{adId}/comments/{commentId}")
     @Operation(summary = "Обновление комментария")
-    public String updateComment(@PathVariable Integer adId, @PathVariable Integer commentId,
-                                @RequestBody CreateOrUpdateCommentDto comment) {
+    public CommentDto updateComment(@PathVariable Integer adId, @PathVariable Integer commentId,
+                                    @RequestBody CreateOrUpdateCommentDto comment) {
         // Логика обновления комментария
-        commentService.updateComment(adId, commentId, comment);
-        return "Комментарий успешно обновлён";
+
+        return commentService.updateComment(adId, commentId, comment);
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
     @Operation(summary = "Удаление комментария")
-    public String deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
+    public void deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
         // Логика удаления комментария
         commentService.deleteComment(adId, commentId);
-        return "Комментарий успешно удалён";
     }
 }
