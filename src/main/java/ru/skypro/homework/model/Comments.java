@@ -11,7 +11,7 @@ public class Comments {
     private Integer pk;
     private String text;
     @Column(name = "createdat")
-    private Integer createdAt;
+    private Long createdAt; // Дата создания
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="users_id")
     private Users users;
@@ -19,7 +19,7 @@ public class Comments {
     @JoinColumn(name="ads_id")
     private Ads ads;
 
-    public Comments(Integer pk, String text, Integer createdAt) {
+    public Comments(Integer pk, String text, Long createdAt) {
         this.pk = pk;
         this.text = text;
         this.createdAt = createdAt;
@@ -60,11 +60,11 @@ public class Comments {
         this.text = text;
     }
 
-    public Integer getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Integer createdAt) {
+    public void setCreatedAt(Long createdAt) {
         this.createdAt = createdAt;
     }
 

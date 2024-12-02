@@ -10,6 +10,9 @@ import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.service.AdService;
 
+import java.io.IOException;
+import java.util.List;
+
 @RestController
 @RequestMapping("/ads")
 @Tag(name = "Объявления")
@@ -41,29 +44,28 @@ public class AdController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Обновление информации об объявлении")
-    public String updateAd(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto ad) {
+    public AdDto updateAd(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto ad) {
         // Логика обновления объявления
-        adService.updateAd(id, ad);
-        return "Объявление успешно обновлено";
+        return adService.updateAd(id, ad);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление объявления")
-    public String removeAd(@PathVariable Integer id) {
+    public void removeAd(@PathVariable Integer id) {
         // Логика удаления объявления
         adService.removeAd(id);
-        return "Объявление успешно удалено";
     }
 
     @GetMapping("/me")
     @Operation(summary = "Получение объявлений авторизованного пользователя")
-    public AdsDto getUserAds() {
-        return null;
+    public AdsDto getMeAllAds() {
+
+        return adService.getMeAllAds();
     }
 
     @PatchMapping("/{id}/image")
     @Operation(summary = "Обновление картинки объявления")
-    public String updateUserImage(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto ad) {
-        return null;
+    public String updateAdImage(@PathVariable Integer id, @RequestParam("image") MultipartFile image) throws IOException {
+        return adService.updateAdImage(id,image);
     }
 }
