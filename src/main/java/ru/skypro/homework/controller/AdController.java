@@ -1,6 +1,7 @@
 package ru.skypro.homework.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +13,7 @@ import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
 import java.util.List;
-
+@CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/ads")
 @Tag(name = "Объявления")
@@ -28,13 +29,15 @@ public class AdController {
         return adService.getAllAds();
     }
 
-    @PostMapping
-    @Operation(summary = "Добавление объявления")
-    public AdDto addAd(@RequestParam("image") MultipartFile image, @RequestBody CreateOrUpdateAdDto ad) {
-        // Логика добавления объявления
-        return adService.addAd(image, ad);
-    }
 
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Добавление объявления")
+    public AdDto addAd(@RequestPart("properties") CreateOrUpdateAdDto ad,
+    @RequestPart("image") MultipartFile image) throws IOException {
+        // Логика добавления объявления
+        return adService.addAd(ad,image);
+    }
     @GetMapping("/{id}")
     @Operation(summary = "Получение информации об объявлении")
     public ExtendedAdDto getAdById(@PathVariable Integer id) {

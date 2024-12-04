@@ -3,8 +3,8 @@ package ru.skypro.homework.service;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdsDto;
@@ -19,28 +19,24 @@ import ru.skypro.homework.repository.AvatarsRepository;
 import ru.skypro.homework.repository.ImagesRepository;
 import ru.skypro.homework.repository.UsersRepository;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AdService {
-    private final UsersRepository usersRepository;
+    private final UserContextService userContextService;
+    private final ImageService imageService;
     private final ImagesRepository imagesRepository;
     private final Mappers mappers;
     private final AdsRepository adsRepository;
-    private final AvatarsRepository avatarsRepository;
 
-    public AdService(UsersRepository usersRepository, ImagesRepository imagesRepository, Mappers mappers, AdsRepository adsRepository, AvatarsRepository avatarsRepository) {
-        this.usersRepository = usersRepository;
+    public AdService(UserContextService userContextService, ImageService imageService, UsersRepository usersRepository, ImagesRepository imagesRepository, AdsRepository adsRepository, AvatarsRepository avatarsRepository, Mappers mappers) {
+        this.userContextService = userContextService;
+        this.imageService = imageService;
         this.imagesRepository = imagesRepository;
-        this.mappers = mappers;
         this.adsRepository = adsRepository;
-        this.avatarsRepository = avatarsRepository;
+        this.mappers = mappers;
     }
 
     public AdsDto getAllAds() {
@@ -51,7 +47,7 @@ public class AdService {
         for (int i = 0; i < adsList.size(); i++) {
             adDtoList.add(new AdDto(
                     adsList.get(i).getUsers().getId(),
-                    imagesRepository.findByAdsId(adsList.get(i).getPk()).getFilePath(), // Проверить то ли возвращается????
+                    imagesRepository.findByAdsPk(adsList.get(i).getPk()).getFilePath(), // Проверить то ли возвращается????
                     adsList.get(i).getPk(),
                     adsList.get(i).getPrice(),
                     adsList.get(i).getTitle()
@@ -62,27 +58,27 @@ public class AdService {
         return adsDto;
     }
 
-    public AdDto addAd(MultipartFile image, CreateOrUpdateAdDto adDto) {
-
+    public AdDto addAd(CreateOrUpdateAdDto adDto, MultipartFile image) throws IOException {
         Ads ads = new Ads();
 
-        ads = mappers.toAds(adDto);
-        ads.setUsers(null); // ВОПРОС КАК ПЕРЕДЕТАТЬ ПОЛЬЗОВАТЕЛЯ?????????????
+        //* ads = mappers.toAds(adDto);
+        ads.setUsers(null); // ВОПРОС КАК ПЕРЕДЕТАТЬ ПОЛЬЗОВАТЕЛЯ?????????????*//*
 
         // ПОСЛЕ КОММЕНТАРИЯ ИДЕТ КОД ЗАМЕНА mappers
-        /*ads.setDescription(adDto.getDescription());
+        ads.setDescription(adDto.getDescription());
         ads.setPk(null);
         ads.setTitle(adDto.getTitle());
-        ads.setUsers(); // ВОПРОС КАК ПЕРЕДЕТАТЬ ПОЛЬЗОВАТЕЛЯ?????????????
-        ads.setPrice(adDto.getPrice());*/
 
-        /////////////// // НУЖНО НАПИСАТЬ ЛОГИКУ СОХРАНЕНИЯ КАРТИНКИ В БАЗУ
+        Users users = userContextService.getCurrentUserFromDb();
+        ads.setUsers(users);
+        ads.setPrice(adDto.getPrice());
+
 
         Ads adsFromDb = adsRepository.save(ads);
-
+        imageService.saveImage(image, ads);
         AdDto adDtoFromDb = new AdDto();
         adDtoFromDb.setAuthor(adsFromDb.getUsers().getId());
-        adDtoFromDb.setImage(imagesRepository.findByAdsId(adsFromDb.getPk()).getFilePath()); //Проверить то ли возвращает
+        adDtoFromDb.setImage(imagesRepository.findByAdsPk(adsFromDb.getPk()).getFilePath());
         adDtoFromDb.setPk(adsFromDb.getPk());
         adDtoFromDb.setPrice(adsFromDb.getPrice());
         adDtoFromDb.setTitle(adsFromDb.getTitle());
@@ -98,7 +94,7 @@ public class AdService {
         extendedAdDto.setAuthorLastName(adsFromDb.getUsers().getLastName());
         extendedAdDto.setDescription(adsFromDb.getDescription());
         extendedAdDto.setEmail(adsFromDb.getUsers().getEmail());
-        extendedAdDto.setImage(imagesRepository.findByAdsId(adsFromDb.getPk()).getFilePath()); // Нужно проверить то ли возвращается???
+        extendedAdDto.setImage(imagesRepository.findByAdsPk(adsFromDb.getPk()).getFilePath()); // Нужно проверить то ли возвращается???
         extendedAdDto.setPhone(adsFromDb.getUsers().getPhone());
         extendedAdDto.setPrice(adsFromDb.getPrice());
         extendedAdDto.setTitle(adsFromDb.getTitle());
@@ -108,26 +104,35 @@ public class AdService {
 
     public AdDto updateAd(Integer id, CreateOrUpdateAdDto adDto) {
         Ads ads = adsRepository.findById(id).get(); // Нужно обработать Optional
-
+        ads.setTitle(adDto.getTitle());
+        ads.setPrice(adDto.getPrice());
+        ads.setDescription(adDto.getDescription());
+        
         Ads adsFromDb = adsRepository.save(ads);
-        AdDto adDtoFromDb = new AdDto();
-        adDtoFromDb.setAuthor(adsFromDb.getUsers().getId());
-        adDtoFromDb.setImage(imagesRepository.findByAdsId(adsFromDb.getPk()).getFilePath()); // Проверить то ли возвращается?
-        adDtoFromDb.setPk(adsFromDb.getPk());
-        adDtoFromDb.setPrice(adsFromDb.getPrice());
-        adDtoFromDb.setTitle(adsFromDb.getTitle());
+
+        AdDto adDtoFromDb = mappers.toAdDto(adsFromDb);
+//        AdDto adDtoFromDb = new AdDto();
+//        adDtoFromDb.setAuthor(adsFromDb.getUsers().getId());
+        adDtoFromDb.setImage(imagesRepository.findByAdsPk(adsFromDb.getPk()).getFilePath()); // Проверить то ли возвращается?
+//        adDtoFromDb.setPk(adsFromDb.getPk());
+//        adDtoFromDb.setPrice(adsFromDb.getPrice());
+//        adDtoFromDb.setTitle(adsFromDb.getTitle());
 
 
         return adDtoFromDb;
     }
 
     public void removeAd(Integer id) {
+        imagesRepository.deleteById(imagesRepository.findByAdsPk(id).getId());
         adsRepository.deleteById(id);
     }
 
     public String updateAdImage(Integer id, MultipartFile image) throws IOException {
-        Images images = imagesRepository.findByAdsId(id);
+        Images images = imagesRepository.findByAdsPk(id);
 //!!!!!!!!! ПРОВЕРИТЬ КАК РАБОТАЕТ МЕТОД!!!!!!!!!!!!!!!
+        ///!!!!! ТУТ НУЖНО ПОХОЖЕ ДОПИСАТЬ УДАЛЕНИЕ КАРТИНКИ ПО ЕЕ ПУТИ И ТУДА ЖЕ ЗАПИСАТЬ НОВУЮ КАРТИНКУ !!!!!!!!
+
+
         images.setFilePath(image.getContentType());
         images.setFileSize(image.getSize());
         images.setMediaType(image.getContentType());
@@ -139,26 +144,23 @@ public class AdService {
 
 
     public AdsDto getMeAllAds() {
-
-        //!!!!!!!!!!ПРОВЕРИТЬ ЧТО ВОЗВРАЩАЕТ authentication.getName() НАМ НУЖЕН ЛОГИН АВТОРИЗОВАННОГО ПОЛЬЗОВАТЕЛЯ!!!!!!!
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        Users users = usersRepository.findByEmail(currentPrincipalName);
+        Users users = userContextService.getCurrentUserFromDb();
         List<Ads> ads = adsRepository.findByUsersId(users.getId());
+
         AdsDto adsDto = new AdsDto();
+
         adsDto.setCount(ads.size());
         List<AdDto> adDtoList = new ArrayList<>();
         for (int i = 0; i < ads.size(); i++) {
             adDtoList.add(new AdDto(
                     ads.get(i).getUsers().getId(),
-                    imagesRepository.findByAdsId(ads.get(i).getPk()).getFilePath(),// Проверить что возвращается!!!!!!!
+                    imagesRepository.findByAdsPk(ads.get(i).getPk()).getFilePath(),// Проверить что возвращается!!!!!!!
                     ads.get(i).getPk(),
                     ads.get(i).getPrice(),
                     ads.get(i).getTitle()
             ));
         }
-
-
+        adsDto.setResults(adDtoList);
         return adsDto;
     }
 }

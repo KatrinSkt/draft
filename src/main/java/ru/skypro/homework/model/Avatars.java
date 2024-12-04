@@ -1,8 +1,11 @@
 package ru.skypro.homework.model;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 
 @Entity
+//@Transactional
 @Table(name="avatars")
 public class Avatars {
     @Id

@@ -11,7 +11,8 @@ public class UpdateUserDto {
     @Schema(type = "string", description = "фамилия пользователя", minLength = 3, maxLength = 10)
     private String lastName;
 
-    @Schema(type = "string", description = "телефон пользователя", pattern = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
+    @Schema(type = "string", description = "телефон пользователя",
+            pattern = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
     private String phone;
 
     public UpdateUserDto(String firstName, String lastName, String phone) {
@@ -52,7 +53,9 @@ public class UpdateUserDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UpdateUserDto that = (UpdateUserDto) o;
-        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone);
+        return Objects.equals(firstName, that.firstName)
+                && Objects.equals(lastName, that.lastName)
+                && Objects.equals(phone, that.phone);
     }
 
     @Override
