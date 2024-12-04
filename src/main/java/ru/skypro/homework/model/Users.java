@@ -2,12 +2,14 @@ package ru.skypro.homework.model;
 
 
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+//@Transactional
 @Table(name="users")
 public class Users {
     @Id

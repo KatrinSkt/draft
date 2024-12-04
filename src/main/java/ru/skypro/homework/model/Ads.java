@@ -1,9 +1,12 @@
 package ru.skypro.homework.model;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+//@Transactional
 public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

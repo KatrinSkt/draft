@@ -1,9 +1,12 @@
 package ru.skypro.homework.model;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+//@Transactional
 @Table(name="comments")
 public class Comments {
     @Id

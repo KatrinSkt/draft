@@ -1,73 +1,76 @@
 
 package ru.skypro.homework.service;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.dto.NewPasswordDto;
+import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.mapper.Mappers;
+import ru.skypro.homework.model.Avatars;
 import ru.skypro.homework.model.Users;
+import ru.skypro.homework.repository.AvatarsRepository;
 import ru.skypro.homework.repository.UsersRepository;
-
-
-import java.util.HashMap;
 
 
 @Service
 public class UserService {
-
+    private final Mappers mappers;
+    private final UserContextService userContextService;
+    private final AvatarsRepository avatarsRepository;
+    private final PasswordEncoder encoder;
     private final UsersRepository usersRepository;
 
-    public UserService(UsersRepository usersRepository) {
+    public UserService(Mappers mappers, UserContextService userContextService, AvatarsRepository avatarsRepository, PasswordEncoder encoder, UsersRepository usersRepository) {
+        this.mappers = mappers;
+        this.userContextService = userContextService;
+        this.avatarsRepository = avatarsRepository;
+        this.encoder = encoder;
         this.usersRepository = usersRepository;
     }
-    /*private Map<String, User> userDatabase = new HashMap<>(); // Хранение пользователей в памяти
-    private String currentUserId = "user1"; // Пример текущего пользователя*/
 
-    /*public boolean updatePassword(String currentPassword, String newPassword) {
-        User currentUser = getCurrentUser();
-        // Проверка текущего пароля (в реальном приложении следует использовать хэширование паролей)
-        if (currentUser.getPassword().equals(currentPassword)) {
-            currentUser.setPassword(newPassword);
-            return true;
-        }
-        return false; // Возврат false, если текущий пароль неверен
-    }*/
+
+    public void updatePassword(NewPasswordDto newPasswordDto) {
+        Users usersFromDb = userContextService.getCurrentUserFromDb();
+        usersFromDb.setPassword(encoder.encode(newPasswordDto.getNewPassword()));
+        usersRepository.save(usersFromDb);
+    }
 
     public UserDto getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        System.out.println("getUser "+currentPrincipalName);
-        Users usersFromDb = usersRepository.findByEmail(currentPrincipalName);
-        UserDto userDto = new UserDto();
-        userDto.setId(usersFromDb.getId());
-        userDto.setEmail(usersFromDb.getEmail());
-        userDto.setFirstName(usersFromDb.getFirstName());
-        userDto.setLastName(usersFromDb.getLastName());
-        userDto.setPhone(usersFromDb.getPhone());
-        userDto.setRole(usersFromDb.getRole());
-        userDto.setImage(null); //!!!!!!!!!!!!!!!!!1ДОПИСАТЬ КАРТИНКУ!!!!!!!!!!!!!!
+        Users usersFromDb = userContextService.getCurrentUserFromDb();
+        UserDto userDto =mappers.toUserDto(usersFromDb);
+//        UserDto userDto = new UserDto();
+//        userDto.setId(usersFromDb.getId());
+//        userDto.setEmail(usersFromDb.getEmail());
+//        userDto.setFirstName(usersFromDb.getFirstName());
+//        userDto.setLastName(usersFromDb.getLastName());
+//        userDto.setPhone(usersFromDb.getPhone());
+//        userDto.setRole(usersFromDb.getRole());
+        userDto.setImage(avatarsRepository.findByUsersId(usersFromDb.getId()).getFilePath());
+
         return userDto;
     }
 
-    /*public void updateUser(UpdateUser updateUserDto) {
-        User currentUser = getCurrentUser();
-        // Обновление информации о пользователе
-        if (updateUserDto.getName() != null) {
-            currentUser.setName(updateUserDto.getName());
-        }
-        if (updateUserDto.getEmail() != null) {
-            currentUser.setEmail(updateUserDto.getEmail());
-        }
-        // Дополнительные поля могут быть добавлены здесь
-    }*/
+    public UpdateUserDto updateUser(UpdateUserDto updateUserDto) {
+        Users usersFromDb = userContextService.getCurrentUserFromDb();
 
-    /*public void updateUserImage(MultipartFile image) {
-        User currentUser = getCurrentUser();
-        // Логика сохранения изображения (например, сохранение на диск или в облачное хранилище)
-        // Здесь можно добавить код для обработки файла и обновления аватара пользователя
-        currentUser.setImageUrl("url_to_updated_image"); // Пример обновления URL изображения
-    }*/
+        usersFromDb.setFirstName(updateUserDto.getFirstName());
+        usersFromDb.setLastName(updateUserDto.getLastName());
+        usersFromDb.setPhone(updateUserDto.getPhone());
+
+        Users usersFromDbNew = usersRepository.save(usersFromDb);
+
+//        UpdateUserDto updateUserDtoFromDb = new UpdateUserDto();
+//        updateUserDtoFromDb.setFirstName(usersFromDbNew.getFirstName());
+//        updateUserDtoFromDb.setLastName(usersFromDbNew.getLastName());
+//        updateUserDtoFromDb.setPhone(usersFromDbNew.getPhone());
+//        return updateUserDtoFromDb;
+
+        return mappers.toUpdateUserDto(usersFromDbNew);
+    }
+
 }
