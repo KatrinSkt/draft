@@ -27,16 +27,14 @@ CREATE TABLE comments (
 CREATE TABLE avatars (
     id INT NOT NULL PRIMARY KEY,
     filePath VARCHAR(255) NOT NULL,
-    fileSize BIGINT NOT NULL,
+    pathForEndpoint VARCHAR(255) NOT NULL,
     mediaType VARCHAR(255) NOT NULL,
-    data BYTEA NOT NULL,
     users_id INT REFERENCES users (id)
 );
 CREATE TABLE images (
     id INT NOT NULL PRIMARY KEY,
     filePath VARCHAR(255) NOT NULL,
-    fileSize BIGINT NOT NULL,
+    pathForEndpoint VARCHAR(255) NOT NULL,
     mediaType VARCHAR(255) NOT NULL,
-    data BYTEA NOT NULL,
     ads_id INT REFERENCES ads (pk)
 );
